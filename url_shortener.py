@@ -112,15 +112,4 @@ def user_input_interface():
         else:
             print("Invalid choice. Please try again.")
 
-def request_flask_api(endpoint, url=None):
-    import requests
-    if endpoint == 'shorten':
-        response = requests.post('http://localhost:5000/shorten', data={'url': url})
-        return response.json()
 
-if __name__ == '__main__':
-    # Run the Flask app in a separate thread
-    threading.Thread(target=run_flask_app).start()
-
-    # Run the user input interface in the main thread
-    user_input_interface()
