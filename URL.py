@@ -67,3 +67,49 @@ def redirect_to_original(short_id):
 def count_shortened_urls():
     total = shortener.count_shortened_urls()
     return jsonify({'total_shortened_urls': total}), 200
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({'error': 'URL not found'}), 404
+
+def run_flask_app():
+    app.run(debug=False, use_reloader=False)
+
+def user_input_interface():
+    while True:
+        print("\nChoose an option:")
+        print("1. Shorten a URL")
+        print("2. Get original URL from shortened URL")
+        print("3. Get total count of shortened URLs")
+        print("4. Exit")
+        choice = input("\nEnter your choice (1-4): ")
+
+        if choice == '1':
+            url = input("Enter the URL to shorten: ")
+            response = request_flask_api('shorten', url)
+            if response.get('error'):
+                print(f"Error: {response['error']}")
+            else:
+                print(f"Shortened URL: {response['shortened_url']}")
+        
+        elif choice == '2':
+            short_url = input("Enter the shortened URL: ")
+            short_id = short_url.split('/')[-1]
+            original_url = shortener.get_original_url(short_id)
+            if original_url:
+                print(f"Original URL: {original_url}")
+            else:
+                print("Error: Shortened URL not found.")
+        
+        elif choice == '3':
+            total = shortener.count_shortened_urls()
+            print(f"Total shortened URLs: {total}")
+        
+        elif choice == '4':
+            print("Exiting...")
+            break
+        
+        else:
+            print("Invalid choice. Please try again.")
+
