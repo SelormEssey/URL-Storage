@@ -1,6 +1,3 @@
-Here’s the README without the code-related details:
-
----
 
 # URL Shortener Project
 
