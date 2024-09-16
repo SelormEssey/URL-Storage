@@ -44,3 +44,26 @@ class URLShortener:
 
 # Create an instance of the URLShortener
 shortener = URLShortener()
+
+
+@app.route('/shorten', methods=['POST'])
+def shorten():
+    try:
+        url = request.form['url']
+        short_url = shortener.shorten_url(url)
+        return jsonify({'shortened_url': short_url}), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/<short_id>', methods=['GET'])
+def redirect_to_original(short_id):
+    original_url = shortener.get_original_url(short_id)
+    if original_url:
+        return redirect(original_url)
+    else:
+        return jsonify({'error': 'Shortened URL not found'}), 404
+
+@app.route('/count', methods=['GET'])
+def count_shortened_urls():
+    total = shortener.count_shortened_urls()
+    return jsonify({'total_shortened_urls': total}), 200
